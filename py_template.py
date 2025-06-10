@@ -6,6 +6,7 @@ if 1:
  
     if standard_input:
         import io, os, sys
+        sys.setrecursionlimit(10 ** 6)
         input = lambda: sys.stdin.readline().strip()
  
         import math
@@ -162,11 +163,15 @@ if 1:
             while tmp != -1:
                 yield self.cur[tmp]
                 tmp = self.pre[tmp]
- 
-T = II()
- 
-for _ in range(T):
-    print()
-            
 
- 
+def solve():
+    #solve
+    return
+
+def main():
+    T = II()
+    for _ in range(T):
+        solve()
+
+if __name__ == "__main__":
+    main()
