@@ -5,6 +5,7 @@
 #include <set>
 #include <map>
 #include <queue>
+#include <stack>
 
 #define for0(i, n) for (int i = 0; i < (int)(n); ++i)            // 0 based indexing
 #define for1(i, n) for (int i = 1; i <= (int)(n); ++i)           // 1 based indexing
@@ -164,13 +165,74 @@ public:
     }
 };
 
+// support all the func of stack and getMin in O(1)
+class MinStack
+{
+public:
+    stack<int> s;
+    stack<int> minStack;
+    MinStack()
+    {
+    }
+
+    void push(int v)
+    {
+        s.push(v);
+        if (sz(minStack) == 0 || v <= minStack.top())
+        {
+            minStack.push(v);
+        }
+    }
+
+    void pop()
+    {
+        int cur = s.top();
+        s.pop();
+        if (minStack.top() == cur)
+        {
+            minStack.pop();
+        }
+    }
+
+    int getMin()
+    {
+        if (sz(s) > 0)
+        {
+            return minStack.top();
+        }
+        return -1;
+    }
+
+    int top()
+    {
+        if (!is_empty())
+        {
+            return s.top();
+        }
+        return -1;
+    }
+
+    bool is_empty()
+    {
+        return sz(s) > 0;
+    }
+};
+
 int main()
 {
-    Stack1 s;
+    // Stack1 s;
 
-    s.push(1);
-    s.push(2);
-    cout << s.peek();
+    // s.push(1);
+    // s.push(2);
+    // cout << s.peek();
+
+    MinStack ms;
+    ms.push(3);
+    ms.push(2);
+    ms.push(2);
+    ms.pop();
+    ms.pop();
+    cout << ms.getMin();
 
     return 0;
 }
@@ -178,5 +240,3 @@ int main()
 /*
 
 */
-
-
