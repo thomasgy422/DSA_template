@@ -131,6 +131,7 @@ public:
     }
 };
 
+// implement stack with queue
 class Stack2
 {
 public:
