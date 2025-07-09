@@ -37,6 +37,26 @@ typedef double ld;
  10000000 00000000 00000000 00000000               01111111 11111111 11111111 11111111
 */
 
+// in array, two index can't be at same, otherwise it wil be zero
+void swapxor(int a, int b)
+{
+    a = a ^ b;
+    b = a ^ b;
+    a = a ^ b;
+    cout << a << "\n";
+    cout << b << "\n";
+}
+
+// find the & result of all the numbers from [left, right]
+int findAnd(int left, int right)
+{
+    while (right > left)
+    {
+        right -= right & (-right);
+    }
+    return right;
+}
+
 // (a ^ p) % p modular exponentiation
 void power()
 {
@@ -128,6 +148,80 @@ void acwing998()
     cout << ans;
 }
 
-
 // lowbit: 1010 -> 0101 -> 0110 -> 0110 & 1010 = 0010
 // lowbit(n)= n&(~n +1)= n&(-n)
+
+// implement add, minus, multiply, divide with bit.
+/*
+    10100.   20
+    00101.   5
+
+    10001.
+  ^ 01000.  a&b << 1
+*/
+
+int add(int a, int b)
+{
+    int ans = a;
+    while (b != 0)
+    {
+        ans = a ^ b;
+        b = (a & b) << 1;
+        a = ans;
+    }
+    return ans;
+}
+
+int neg(int a)
+{
+    return add(~a, 1);
+}
+
+int minuss(int a, int b)
+{
+    return add(a, neg(b));
+}
+
+int multiply(int a, int b)
+{
+    int ans = 0;
+    int i = 0;
+    while (b != 0)
+    {
+        if (b & 1)
+        {
+            ans = add(ans, a << i);
+        }
+        b >>= 1;
+        i++;
+    }
+    return ans;
+}
+
+int divide(int a, int b)
+{
+    int x = a < 0 ? neg(a) : a;
+    int y = b < 0 ? neg(b) : b;
+    int ans = 0;
+    for (int i = 30; i >= 0; i = minuss(i, 1))
+    {
+        if ((x >> i) >= y)
+        {
+            ans |= (1 << i);
+            x = minuss(x, y << i);
+        }
+    }
+    return a < 0 ^ b < 0 ? neg(ans) : ans;
+}
+
+int main()
+{
+    cout << add(125, 256) << "\n";
+    cout << neg(3) << "\n";
+    cout << minuss(5, 3) << "\n";
+    cout << multiply(-5, 3) << "\n";
+    cout << divide(27, 5) << "\n";
+}
+
+/*
+ */
