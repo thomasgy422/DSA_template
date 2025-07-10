@@ -111,7 +111,7 @@ public:
             int ord = s[i] - 'a';
             if (arr[cur][ord] == 0)
             {
-                return false;
+                return 0;
             }
             cur = arr[cur][ord];
         }
