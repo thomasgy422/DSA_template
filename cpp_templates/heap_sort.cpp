@@ -126,6 +126,9 @@ public:
 
 int main()
 {
+    // default max heap
+    priority_queue<int> maxpq;
+    priority_queue<int, vector<int>, greater<int>> minpq;
     MaxHeap hp;
     hp.push(1);
     hp.push(10);
