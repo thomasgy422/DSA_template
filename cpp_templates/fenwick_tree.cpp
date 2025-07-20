@@ -40,6 +40,10 @@ public:
     int tree[500002];
     int size;
     // size is equal to the size of input list
+    FenwickTree()
+    {
+    }
+
     FenwickTree(int n)
     {
         size = n;
@@ -73,39 +77,82 @@ public:
     {
         return sum(r) - sum(l - 1);
     }
+
+    // single point update, range query
+    void solve1()
+    {
+        int n, m;
+        cin >> n >> m;
+        FenwickTree ft(n);
+        for0(i, n)
+        {
+            int v;
+            cin >> v;
+            // 维护前缀和
+            ft.add(i + 1, v);
+        }
+
+        for0(i, m)
+        {
+            int op;
+            cin >> op;
+            if (op == 1)
+            {
+                int x, k;
+                cin >> x >> k;
+                ft.add(x, k);
+            }
+            else
+            {
+                int x, y;
+                cin >> x >> y;
+                int ret = ft.query(x, y);
+                cout << ret << endl;
+            }
+        }
+    }
+
+    // range update, single point query
+    void solve2()
+    {
+        int n, m;
+        cin >> n >> m;
+        FenwickTree ft(n);
+        for0(i, n)
+        {
+            int v;
+            cin >> v;
+            // 数组中维护的是差分信息
+            ft.add(i + 1, v);
+            ft.add(i + 2, -v);
+        }
+        for0(i, m)
+        {
+            int op;
+            cin >> op;
+            if (op == 1)
+            {
+                int x, y, k;
+                cin >> x >> y >> k;
+                ft.add(x, k);
+                ft.add(y + 1, -k);
+            }
+            else
+            {
+                int x;
+                cin >> x;
+                // 前缀和求当前下标x的值
+                int ret = ft.query(1, x);
+                cout << ret << endl;
+            }
+        }
+    }
 };
 
 int main()
 {
-    int n, m;
-    cin >> n >> m;
-    FenwickTree ft(n);
-
-    // start from idx1
-    for0(i, n)
-    {
-        int v;
-        cin >> v;
-        ft.add(i + 1, v);
-    }
-
-    for0(i, m)
-    {
-        int op;
-        cin >> op;
-        if (op == 1)
-        {
-            int x, k;
-            cin >> x >> k;
-            ft.add(x, k);
-        }
-        else
-        {
-            int x, y;
-            cin >> x >> y;
-            int ret = ft.query(x, y);
-            cout << ret << endl;
-        }
-    }
+    FenwickTree ft;
+    // ft.solve1();
+    ft.solve2();
     return 0;
 }
