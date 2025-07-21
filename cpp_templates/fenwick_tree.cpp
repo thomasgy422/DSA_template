@@ -37,7 +37,7 @@ typedef double ld;
 class FenwickTree
 {
 public:
-    int tree[500002];
+    vll tree;
     int size;
     // size is equal to the size of input list
     FenwickTree()
@@ -47,11 +47,10 @@ public:
     FenwickTree(int n)
     {
         size = n;
-        for (int i = 0; i <= size; ++i)
-            tree[i] = 0;
+        tree.resize(size + 2, 0);
     }
 
-    void add(int i, int v)
+    void add(int i, ll v)
     {
         int j = i;
         while (j <= size)
@@ -61,10 +60,10 @@ public:
         }
     }
 
-    int sum(int i)
+    ll sum(int i)
     {
         int j = i;
-        int ans = 0;
+        ll ans = 0;
         while (j > 0)
         {
             ans += tree[j];
@@ -73,7 +72,7 @@ public:
         return ans;
     }
 
-    int query(int l, int r)
+    ll query(int l, int r)
     {
         return sum(r) - sum(l - 1);
     }
@@ -147,12 +146,60 @@ public:
             }
         }
     }
+
+    // range query and range query
+    void solve3()
+    {
+        /*
+            total = k * sum(di) for i in [1, k] - sum((i - 1) * di) for i in [1, k]
+            用两个树状数组
+            ft1 维护差分信息 di
+            ft2 维护差分信息 （i-1）* di
+        */
+        int n, m;
+        cin >> n >> m;
+        FenwickTree ft1(n);
+        FenwickTree ft2(n);
+        ll v;
+        for1(i, n)
+        {
+            cin >> v;
+            ft1.add(i, v);
+            ft1.add(i + 1, -v);
+            ft2.add(i, (i - 1) * v);
+            ft2.add(i + 1, -i * v);
+        }
+        int op;
+        int x, y;
+        ll k;
+        for0(i, m)
+        {
+
+            cin >> op;
+            if (op == 1)
+            {
+                cin >> x >> y >> k;
+                ft1.add(x, k);
+                ft1.add(y + 1, -k);
+                ft2.add(x, (x - 1) * k);
+                ft2.add(y + 1, -y * k);
+            }
+            else
+            {
+                cin >> x >> y;
+                ll res1 = (x - 1) * ft1.sum(x - 1) - ft2.sum(x - 1);
+                ll res2 = y * ft1.sum(y) - ft2.sum(y);
+                cout << res2 - res1 << endl;
+            }
+        }
+    }
 };
 
 int main()
 {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
     FenwickTree ft;
-    // ft.solve1();
-    ft.solve2();
+    ft.solve3();
     return 0;
 }
