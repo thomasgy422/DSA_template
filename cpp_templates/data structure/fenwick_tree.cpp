@@ -195,11 +195,184 @@ public:
     }
 };
 
+// 离散化维护值域
+// https://www.luogu.com.cn/problem/P1908
+void numberOfInversions()
+{
+    int n;
+    cin >> n;
+    vi nums(n);
+    vi nums2(n);
+    for0(i, n)
+    {
+        cin >> nums[i];
+        nums2[i] = nums[i];
+    }
+
+    sort(nums2.begin(), nums2.end());
+    FenwickTree ft(n);
+    ll ans = 0;
+    for0(i, n)
+    {
+        auto it = lower_bound(nums2.begin(), nums2.end(), nums[i]);
+        int idx = distance(nums2.begin(), it) + 1;
+        ans += ft.query(idx + 1, n);
+        ft.add(idx, 1);
+    }
+
+    cout << ans << endl;
+}
+
+// 离散化，维护单元素数量，上升二元素数量
+// https://www.luogu.com.cn/problem/P1637
+void P1637()
+{
+    int n;
+    cin >> n;
+    vi nums(n);
+    vi nums2(n);
+    int mx;
+    for0(i, n)
+    {
+        cin >> nums[i];
+        nums2[i] = nums[i];
+    }
+
+    sort(nums2.begin(), nums2.end());
+
+    FenwickTree ft1(n);
+    FenwickTree ft2(n);
+    ll ans = 0;
+    for0(i, n)
+    {
+        auto it = lower_bound(nums2.begin(), nums2.end(), nums[i]);
+        int idx = distance(nums2.begin(), it) + 1;
+        ft1.add(idx, 1);
+        int count = ft1.sum(idx - 1);
+        ft2.add(idx, count);
+        ans += ft2.sum(idx - 1);
+    }
+    cout << ans << endl;
+}
+
+struct sort_pred
+{
+    bool operator()(const vi &left, const vi &right)
+    {
+        return left[1] < right[1];
+    }
+};
+
+// https://www.luogu.com.cn/problem/P1972
+// 离线处理，维护
+void P1972()
+{
+    int n, m;
+    cin >> n;
+    vi nums(n);
+    // strore right most idx for the color
+    int mx = 0;
+    FenwickTree ft(n);
+    for0(i, n)
+    {
+        cin >> nums[i];
+        mx = max(nums[i], mx);
+    }
+    vi hm(mx + 1);
+
+    cin >> m;
+    int l, r;
+    vvi qu(m);
+    for0(i, m)
+    {
+        cin >> l >> r;
+        qu[i] = {l, r, i};
+    }
+
+    vi res(m);
+    sort(qu.begin(), qu.end(), sort_pred());
+    int i = 0;
+    int j = 1;
+    while (i < m)
+    {
+        vi cur = qu[i];
+        while (j <= n && j <= cur[1])
+        {
+            if (hm[nums[j - 1]] == 0)
+            {
+                hm[nums[j - 1]] = j;
+                ft.add(j, 1);
+            }
+            else
+            {
+                int idx = hm[nums[j - 1]];
+                ft.add(idx, -1);
+                hm[nums[j - 1]] = j;
+                ft.add(j, 1);
+            }
+            j++;
+        }
+        res[cur[2]] = ft.query(cur[0], cur[1]);
+        i++;
+    }
+
+    for0(i, m)
+    {
+        cout << res[i] << endl;
+    }
+}
+
+// 贪心的把当前第一位匹配最后一位，转化为求逆序对问题
+// https://leetcode.com/problems/minimum-number-of-moves-to-make-palindrome/description/
+class Solution {
+public:
+    int minMovesToMakePalindrome(string s) {
+        int n = sz(s);
+        vi res(n);
+        int l = 0, r = n - 1;
+        vector<deque<int>> hm(26);
+        for0(i, n) {
+            hm[s[i] - 'a'].pb(i);
+        }
+            
+        for0(i, n) {
+            if (sz(hm[s[i] - 'a']) > 1) {
+                int curl = hm[s[i] - 'a'].front();hm[s[i] - 'a'].pop_front();
+                int curr = hm[s[i] - 'a'].back();hm[s[i] - 'a'].pop_back();
+                res[curl] = l;
+                res[curr] = r;
+                l++;
+                r--;
+            }
+        }
+
+        for0(i, 26) {
+            if(sz(hm[i]) > 0) {
+                res[hm[i].front()] = l;
+                break;
+            }
+        }
+
+        int ans = 0;
+        FenwickTree ft(n);
+
+        for0(i, n) {
+            ans += ft.query(res[i] + 1, n);
+            ft.add(res[i] + 1, 1);
+        }
+        return ans;
+    }
+};
+
 int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(0);
-    FenwickTree ft;
-    ft.solve3();
+    // numberOfInversions();
+    // P1637();
+    P1972();
     return 0;
 }
+
+/*     
+*/
