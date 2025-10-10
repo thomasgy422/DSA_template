@@ -9,8 +9,6 @@ using namespace std;
 #define cpresent(c, x) (find(all(c), x) != (c).end())
 #define sz(a) int((a).size())
 
-using namespace std;
-
 typedef long long i64;
 typedef double ld;
 typedef __int128_t i128;

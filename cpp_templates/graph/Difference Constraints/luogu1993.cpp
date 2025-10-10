@@ -9,8 +9,6 @@ using namespace std;
 #define cpresent(c, x) (find(all(c), x) != (c).end())
 #define sz(a) int((a).size())
 
-using namespace std;
-
 typedef vector<int> vi;
 typedef vector<vi> vvi;
 typedef pair<int, int> ii;
